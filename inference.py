@@ -6,15 +6,15 @@ from PIL import Image
 import torchvision.models as models
 import torch.nn as nn
 
-img_size=224
+img_size = 224
 
 with open('hw1_dataset/testing_img_order.txt') as f:
     # all the testing images
-    test_images = [x.strip() for x in f.readlines()]  
-     
+    test_images = [x.strip() for x in f.readlines()]
+
 with open('hw1_dataset/classes.txt') as f:
     # list of class names
-    classes = [l.strip() for l in f.readlines()] 
+    classes = [l.strip() for l in f.readlines()]
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
@@ -36,7 +36,7 @@ transform = transforms.Compose([
 model.eval()
 with torch.no_grad():
     # image order is important to your result
-    for filename in test_images: 
+    for filename in test_images:
         img = Image.open(os.path.join('hw1_dataset/testing_images', filename))
         img = img.convert('RGB')
         img = transform(img)
@@ -44,7 +44,7 @@ with torch.no_grad():
         output = model(img)
         _, predicted = torch.max(output.data, 1)
         # the predicted category
-        classname =  classes[predicted.cpu().item()]
+        classname = classes[predicted.cpu().item()]
         submission.append([filename, classname])
 
 np.savetxt('answer.txt', submission, fmt='%s')
